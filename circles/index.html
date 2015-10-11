@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Circles</title>
+    <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
+    <script src="https://code.createjs.com/tweenjs-0.6.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <style type="text/css">
+        #stage {
+            border: 1px solid #E9E9E9;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <h1>Circles</h1>
+    <canvas id="stage" width="900" height="500"></canvas>
+    <p>Animating circles using EaselJS and TweenJS</p>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var circleColor = "#6694D6",
+        startRadius = 10,
+        strokeSize = 2,
+        scaleFactor = 20,
+        numCircles = 26;
+
+        var stage = new createjs.Stage("stage");
+        var w = stage.canvas.width,
+        h = stage.canvas.height,
+        centerX = Math.floor((w - (startRadius + strokeSize))/2),
+        centerY = Math.floor((h - (startRadius + strokeSize))/2);
+        var circles = [];
+
+        for (var i = 0; i < numCircles; i++) {
+            var circle = new createjs.Shape();
+
+            circle.graphics.s(circleColor).ss(strokeSize, 0, 0, 10, true).drawCircle(0, 0, startRadius);
+            circle.x = centerX;
+            circle.y = centerY;
+            circle.visible = false;
+            stage.addChild(circle);
+
+            createjs.Tween.get(circle, { loop: true })
+            .wait(750 * i)
+            .set({ visible: true})
+            .to({
+                    x: centerX + ((startRadius * scaleFactor)/2),
+                    scaleX: scaleFactor, scaleY: scaleFactor
+                }, 20000, createjs.Ease.sineOut)
+            .call(function(c) {
+                c.visible = false;
+            }, [circle]);
+            circles.push(circle);
+        };
+
+        createjs.Ticker.setFPS(60);
+        createjs.Ticker.addEventListener("tick", stage);
+    });
+</script>
+</body>
+</html>
